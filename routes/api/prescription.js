@@ -1,13 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
-const { sequelize } = require('../../models');
-const { QueryTypes } = require('sequelize');
+
 const { Prescription } = require('../../models');
 
-console.log(sequelize.models.Prescription);
-console.log(Prescription);
-console.log(QueryTypes);
 router.post('/', async (req, res) => {
   const {
     patientId,
