@@ -15,20 +15,21 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(
     // process.env[config.use_env_variable],
     {
-      database: "da6lkm0ngoggpo",
-      username: "rvxvlswceedgdk",
-      password: "89ad3731e40da42ea594a0dac393f46e27fe9a97142ff95b1e1bed6fc990abb2",
-      host: "ec2-52-4-177-4.compute-1.amazonaws.com",
+      database: 'da6lkm0ngoggpo',
+      username: 'rvxvlswceedgdk',
+      password:
+        '89ad3731e40da42ea594a0dac393f46e27fe9a97142ff95b1e1bed6fc990abb2',
+      host: 'ec2-52-4-177-4.compute-1.amazonaws.com',
       port: 5432,
-      dialect: "postgres",
+      dialect: 'postgres',
       dialectOptions: {
         ssl: {
           require: true,
-          rejectUnauthorized: false // <<<<<<< YOU NEED THIS
-        }
-      },
+          rejectUnauthorized: false, // <<<<<<< YOU NEED THIS
+        },
       },
     },
+
     // config,
   );
 } else {
