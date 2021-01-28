@@ -18,6 +18,7 @@
     "password": "le101347",
     "database": "robokidney",
     "host": "localhost",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "use_env_variable": "DATABASE_URL"
   }
 }
