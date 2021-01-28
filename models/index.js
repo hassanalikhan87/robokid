@@ -16,8 +16,8 @@ if (config.use_env_variable) {
     process.env[config.use_env_variable],
     {
       dialectOptions: {
-        // ssl: true,
-        rejectUnauthorized: false,
+        ssl: true,
+        // rejectUnauthorized: false,
       },
     },
     // config,
