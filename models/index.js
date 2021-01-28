@@ -26,7 +26,7 @@ if (config.use_env_variable) {
       dialectOptions: {
         // ssl: true,
         ssl: {
-          require: false,
+          require: true,
           rejectUnauthorized: false, // <<<<<<< YOU NEED THIS
         },
       },
