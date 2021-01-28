@@ -14,10 +14,6 @@
     "dialect": "postgres"
   },
   "production": {
-    "username": "postgres",
-    "password": "le101347",
-    "database": "robokidney",
-    "host": "localhost",
     "dialect": "postgres",
     "dialectOptions": {
       "ssl": true,
