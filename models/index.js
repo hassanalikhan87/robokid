@@ -22,11 +22,13 @@ if (config.use_env_variable) {
       host: 'ec2-52-4-177-4.compute-1.amazonaws.com',
       port: 5432,
       dialect: 'postgres',
+      protocol: 'postgres',
       dialectOptions: {
-        ssl: {
-          require: false,
-          rejectUnauthorized: false, // <<<<<<< YOU NEED THIS
-        },
+        ssl: true,
+        // ssl: {
+        //   require: false,
+        //   rejectUnauthorized: false, // <<<<<<< YOU NEED THIS
+        // },
       },
     },
 
