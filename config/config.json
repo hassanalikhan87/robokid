@@ -14,10 +14,6 @@
     "dialect": "postgres"
   },
   "production": {
-    "username": "postgres",
-    "password": "le101347",
-    "database": "robokidney",
-    "host": "127.10.0.1",
-    "dialect": "postgres"
+    "use_env_variable": "postgres://gntorzikmjnajc:7285adccafb5cdd6644b85f97cc5d24fca9c8e8e51f605e0719e8af299a49f01@ec2-54-211-55-24.compute-1.amazonaws.com:5432/des9e48j578iol"
   }
 }
