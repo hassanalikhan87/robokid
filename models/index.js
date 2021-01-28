@@ -24,11 +24,11 @@ if (config.use_env_variable) {
       dialect: 'postgres',
       protocol: 'postgres',
       dialectOptions: {
-        ssl: true,
-        // ssl: {
-        //   require: false,
-        //   rejectUnauthorized: false, // <<<<<<< YOU NEED THIS
-        // },
+        // ssl: true,
+        ssl: {
+          require: false,
+          rejectUnauthorized: false, // <<<<<<< YOU NEED THIS
+        },
       },
     },
 
