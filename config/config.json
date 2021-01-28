@@ -3,21 +3,21 @@
     "username": "postgres",
     "password": "le101347",
     "database": "robokidney",
-    "host": "119.152.153.76",
+    "host": "12710.0.1",
     "dialect": "postgres"
   },
   "test": {
     "username": "postgres",
     "password": "le101347",
     "database": "robokidney",
-    "host": "119.152.153.76",
+    "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
     "username": "postgres",
     "password": "le101347",
     "database": "robokidney",
-    "host": "119.152.153.76",
+    "host": "127.0.0.1",
     "dialect": "postgres"
   }
 }
