@@ -25,7 +25,7 @@ router.put('/:patientId', async (req, res) => {
   } = req.body;
 
   console.log(req.body);
-  console.log(patientId, volume); 
+  console.log(patientId, volume);
 
   await LiveReadings.findAll({ where: { patientId: patientId } })
     .then(async (obj) => {
@@ -63,6 +63,7 @@ router.put('/:patientId', async (req, res) => {
       else {
         console.log(3);
         return LiveReadings.create({
+          patientId,
           volume,
           ipc_states,
           currentState,
