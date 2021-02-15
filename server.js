@@ -7,6 +7,7 @@ const patient = require('./routes/api/patient');
 const doctor = require('./routes/api/doctor');
 const monitoring = require('./routes/api/monitoring');
 const report = require('./routes/api/report');
+const ping = require('./routes/api/ping');
 
 //Server SetUp
 const app = express();
@@ -21,7 +22,7 @@ app.use(express.json()); //req.body
 
 // console.log(sequelize.models);
 //declaring port
-var PORT = process.env.PORT || 8080;
+var PORT = process.env.PORT || 5000;
 
 // const test = app.address()
 //ROUTES//
@@ -30,6 +31,7 @@ app.use('/api/report', report);
 app.use('/api/patient', patient);
 app.use('/api/doctor', doctor);
 app.use('/api/monitoring', monitoring);
+app.use('/ping', ping);
 app.use(express.static(__dirname));
 
 // server listening
@@ -38,10 +40,3 @@ app.listen(PORT, async () => {
   await sequelize.authenticate();
   console.log('Connected to PostgreSQL');
 });
-
-// "username": "gntorzikmjnajc",
-// "port": 5432,
-// "password": "7285adccafb5cdd6644b85f97cc5d24fca9c8e8e51f605e0719e8af299a49f01",
-// "database": "des9e48j578iol",
-// "host": "ec2-54-211-55-24.compute-1.amazonaws.com",
-// "dialect": "postgres"

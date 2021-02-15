@@ -14,6 +14,8 @@ router.post('/', async (req, res) => {
     totalCycles,
     lastFill,
     lastFillVolume,
+    numberOfBags, //to be added on frontend
+    maxDrain, //to be added on frontend
   } = req.body.newPrescription;
   let lastFillBoolean;
   if (lastFill) {
@@ -21,62 +23,87 @@ router.post('/', async (req, res) => {
   } else {
     lastFillBoolean = 0;
   }
-  const content =
-    'PATIENT_ID ' +
-    patientId +
-    '\n' +
-    'MACHINE_ID ' +
-    machineId +
-    '\n' +
-    'CYCLES ' +
-    totalCycles +
-    '\n' +
-    'FILL_VOLUME_ML ' +
-    fillVolume +
-    '\n' +
-    'DWELL_TIME_SECONDS ' +
-    dwellTime +
-    '\n' +
-    'TARGET_UF_ML ' +
-    expectedUF +
-    '\n' +
-    'LAST_FILL_BOOLEAN ' +
-    lastFillBoolean +
-    '\n' +
-    'LAST_FILL_VOLUME_ML ' +
-    lastFillVolume;
+  if (maxDrain < fillVolume + expectedUF) {
+    res.json({ err: 'No' });
+  } else {
+    const content =
+      'CYCLES ' +
+      totalCycles +
+      '\n' +
+      'FILL_VOLUME_ML ' +
+      fillVolume +
+      '\n' +
+      'MIN_INITIAL_DRAIN_VOLUME_ML 0\n' +
+      'MAX_INITIAL_DRAIN_VOLUME_ML 4000\n' +
+      'MAX_DRAIN_VOLUME_ML ' +
+      maxDrain +
+      '\n' +
+      'MAX_NEGATIVE_UF_PERCENTAGE 10\n' +
+      'PUSHBACK_VOLUME_ML 50\n' +
+      'TARGET_UF_ML ' +
+      expectedUF +
+      '\n' +
+      'PERCENTAGE_TARGET_UF 70\n' +
+      'DWELL_TIME_SECONDS ' +
+      dwellTime +
+      '\n' +
+      'DRAIN_TIMEOUT_SECONDS 900\n' +
+      'NUMBER_OF_BAGS ' +
+      numberOfBags +
+      '\n' + // / 1 TO 3
+      'BAG_VOLUME_ML 2000\n' +
+      'DEXTROSE_PERCENTAGE 0\n' +
+      'LAST_FILL_BOOLEAN ' +
+      lastFillBoolean +
+      '\n' +
+      'LAST_FILL_VOLUME_ML ' +
+      lastFillVolume +
+      '\n' +
+      'MAX_CUMULATIVE_BUBBLES_CC 5\n' +
+      'MAX_ALLOWED_BUBBLE_SIZE_CC 5\n' +
+      'MAX_POSITIVE_UF_ML 1750\n' +
+      'CUMULATIVE_LOW_UF_CYCLES 3\n' +
+      'MAX_CUMULATIVE_POSITIVE_UF_ML 3000\n' +
+      'BAG_VOLUME_ML_1 2100\n' +
+      'BAG_VOLUME_ML_2 4200\n' +
+      'BAG_VOLUME_ML_3 4400\n' +
+      'BAG_VOLUME_ML_4 4000\n' +
+      'BAG_VOLUME_ML_5 5000\n';
 
-  await Prescription.create({
-    dwellTime,
-    fillVolume,
-    expectedUF,
-    totalCycles,
-    lastFill,
-    patientId,
-    machineId,
-    lastFillVolume,
-  })
-    .then((pres) => {
-      const dir = `files/${pres.patientId}`;
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-      }
-      const dir1 = `files/${pres.patientId}/prescriptions`;
-      if (!fs.existsSync(dir1)) {
-        fs.mkdirSync(dir1);
-      }
-      fs.writeFile(
-        `files/${pres.patientId}/prescriptions/${pres.patientId}_current.txt`,
-        content,
-        { recursive: true },
-        (err) => {
-          if (err) throw err;
-          console.log('file created');
-        },
-      );
-      res.json(pres);
+    await Prescription.create({
+      dwellTime,
+      fillVolume,
+      expectedUF,
+      totalCycles,
+      lastFill,
+      patientId,
+      machineId,
+      lastFillVolume,
+      maxDrain,
+      numberOfBags,
     })
-    .catch((err) => res.json(err));
+      .then((pres) => {
+        const dir = `files/${pres.patientId}`;
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir);
+        }
+        const dir1 = `files/${pres.patientId}/prescriptions`;
+        if (!fs.existsSync(dir1)) {
+          fs.mkdirSync(dir1);
+        }
+        fs.writeFile(
+          `files/${pres.patientId}/prescriptions/${pres.patientId}_current.txt`,
+          content,
+          { recursive: true },
+          (err) => {
+            if (err) throw err;
+            console.log('file created');
+          },
+        );
+        res.json(pres);
+      })
+      .catch((err) => res.json(err));
+  }
 });
 
 //METHOD: GET
@@ -96,42 +123,6 @@ router.get('/download/:patientId', async (req, res) => {
   const file = `files/${patientId}/prescriptions/${patientId}_current.txt`;
   res.download(file);
   // res.sendFile(file);
-});
-
-//Access Patient Report List for APP
-router.get('/reportlist/:patientId', (req, res) => {
-  const { patientId } = req.params;
-  const dir = `files/${patientId}/reports/`;
-  fs.readdir(dir, (err, files) => {
-    if (!err) {
-      let list = [];
-      // console.log(files);
-      if (files.length > 0) {
-        files.reverse().map((fl) => {
-          console.log('!err');
-          const file = `files/${patientId}/reports/${fl}/${fl}.txt`;
-          fs.readFile(file, (error, data) => {
-            if (!error) {
-              const text = data.toString();
-              const uf = text.split('TARGET_UF_ML ').pop().split('\n')[0];
-              list.push({ date: fl, uf: uf });
-              if (files.length === list.length) {
-                const output = list;
-                res.json(output);
-              }
-            } else {
-              console.log('error');
-              res.send(error);
-            }
-          });
-        });
-      } else {
-        res.send(err);
-      }
-    } else {
-      res.send(err);
-    }
-  });
 });
 
 //Access Patient Report for APP

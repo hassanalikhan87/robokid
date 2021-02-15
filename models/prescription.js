@@ -7,9 +7,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      
-    }
+    static associate(models) {}
   }
 
   Prescription.init(
@@ -35,6 +33,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       expectedUF: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      maxDrain: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      numberOfBags: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },

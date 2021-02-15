@@ -32,6 +32,14 @@ module.exports = {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      maxDrain: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      numberOfBags: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       lastFill: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

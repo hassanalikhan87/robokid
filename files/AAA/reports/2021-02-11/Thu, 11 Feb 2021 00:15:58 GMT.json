@@ -1,0 +1,31 @@
+{
+  "date": "",
+  "startTime": "",
+  "initialDrainVolume": "",
+  "initialDrainTime": "",
+  "cycles": [
+    {
+      "cycle": "1",
+      "fillVolume": "",
+      "fillTime": "",
+      "dwellTime": "",
+      "drainVolume": "",
+      "drainTime": "",
+      "ultraFiltrationVolume": ""
+    },
+    {
+      "cycle": "2",
+      "fillVolume": "",
+      "fillTime": "",
+      "dwellTime": "",
+      "drainVolume": "",
+      "drainTime": "",
+      "ultraFiltrationVolume": ""
+    }
+  ],
+  "lastFillVolume": "",
+  "lastFillTime": "",
+  "prescription": {},
+  "endTime": "",
+  "isAborted":""
+}
