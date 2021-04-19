@@ -98,7 +98,7 @@ router.get('/:patientId', async (req, res) => {
       if (obj.isActive) {
         const limit = Date.now() - Date.parse(obj.updatedAt);
         console.log('limit1', limit);
-        if (limit > 20000) {
+        if (limit > 60000) {
           console.log(22);
           return LiveReadings.update(
             {
