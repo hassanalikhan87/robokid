@@ -53,7 +53,7 @@ router.put('/:patientId', async (req, res) => {
           },
           { where: { patientId } },
         )
-          .then((vol) => res.json(vol))
+          .then((vol) => res.json('Go'))
           .catch((err) => {
             console.log(err);
             res.json(err);
@@ -91,13 +91,34 @@ router.put('/:patientId', async (req, res) => {
 
 router.get('/:patientId', async (req, res) => {
   const { patientId } = req.params;
+  console.log(1);
   await LiveReadings.findOne({ where: { patientId } })
     .then((obj) => {
-      console.log(Date.now() - Date.parse(obj.updatedAt));
-      console.log(Date.parse(obj.updatedAt));
-      console.log(obj.updatedAt);
-      console.log(Date.now());
-      res.json(obj);
+      console.log(obj.isActive);
+      if (obj.isActive) {
+        const limit = Date.now() - Date.parse(obj.updatedAt);
+        console.log('limit1', limit);
+        if (limit > 20000) {
+          console.log(22);
+          return LiveReadings.update(
+            {
+              isActive: false,
+            },
+            { where: { patientId } },
+          )
+            .then((obj) => {
+              res.json(obj);
+            })
+            .catch((err) => console.log(err));
+        }
+        console.log('limit2', limit);
+        // console.log(Date.parse(obj.updatedAt));
+        // console.log(obj.updatedAt);
+        // console.log(Date.now());
+        res.json(obj);
+      } else {
+        res.json(obj);
+      }
     })
     .catch((err) => res.json(err));
 });

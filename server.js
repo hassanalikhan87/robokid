@@ -7,6 +7,7 @@ const patient = require('./routes/api/patient');
 const doctor = require('./routes/api/doctor');
 const monitoring = require('./routes/api/monitoring');
 const report = require('./routes/api/report');
+const image = require('./routes/api/image');
 const ping = require('./routes/api/ping');
 
 //Server SetUp
@@ -31,6 +32,7 @@ app.use('/api/report', report);
 app.use('/api/patient', patient);
 app.use('/api/doctor', doctor);
 app.use('/api/monitoring', monitoring);
+app.use('/api/image', image);
 app.use('/ping', ping);
 app.use(express.static(__dirname));
 

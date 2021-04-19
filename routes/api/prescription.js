@@ -4,9 +4,10 @@ const fs = require('fs');
 
 const { Prescription } = require('../../models');
 
-router.post('/', async (req, res) => {
+router.post('/upload/:patientId', async (req, res) => {
+  console.log(req.body);
+  const { patientId } = req.params;
   const {
-    patientId,
     machineId,
     fillVolume,
     dwellTime,
@@ -14,8 +15,8 @@ router.post('/', async (req, res) => {
     totalCycles,
     lastFill,
     lastFillVolume,
-    numberOfBags, //to be added on frontend
-    maxDrain, //to be added on frontend
+    numberOfBags,
+    maxDrain,
   } = req.body.newPrescription;
   let lastFillBoolean;
   if (lastFill) {
@@ -69,38 +70,44 @@ router.post('/', async (req, res) => {
       'BAG_VOLUME_ML_3 4400\n' +
       'BAG_VOLUME_ML_4 4000\n' +
       'BAG_VOLUME_ML_5 5000\n';
-
-    await Prescription.create({
-      dwellTime,
-      fillVolume,
-      expectedUF,
-      totalCycles,
-      lastFill,
-      patientId,
-      machineId,
-      lastFillVolume,
-      maxDrain,
-      numberOfBags,
-    })
-      .then((pres) => {
-        const dir = `files/${pres.patientId}`;
-        if (!fs.existsSync(dir)) {
-          fs.mkdirSync(dir);
-        }
-        const dir1 = `files/${pres.patientId}/prescriptions`;
-        if (!fs.existsSync(dir1)) {
-          fs.mkdirSync(dir1);
-        }
-        fs.writeFile(
-          `files/${pres.patientId}/prescriptions/${pres.patientId}_current.txt`,
-          content,
-          { recursive: true },
-          (err) => {
-            if (err) throw err;
-            console.log('file created');
-          },
-        );
-        res.json(pres);
+    await Prescription.update(
+      { isLatest: false },
+      { where: { isLatest: true, patientId } },
+    )
+      .then(async () => {
+        await Prescription.create({
+          dwellTime,
+          fillVolume,
+          expectedUF,
+          totalCycles,
+          lastFill,
+          patientId,
+          machineId,
+          lastFillVolume,
+          maxDrain,
+          numberOfBags,
+        })
+          .then((pres) => {
+            const dir = `files/${pres.patientId}`;
+            if (!fs.existsSync(dir)) {
+              fs.mkdirSync(dir);
+            }
+            const dir1 = `files/${pres.patientId}/prescriptions`;
+            if (!fs.existsSync(dir1)) {
+              fs.mkdirSync(dir1);
+            }
+            fs.writeFile(
+              `files/${pres.patientId}/prescriptions/${pres.patientId}_current.txt`,
+              content,
+              { recursive: true },
+              (err) => {
+                if (err) throw err;
+                console.log('file created');
+              },
+            );
+            res.json('success');
+          })
+          .catch((err) => res.json(err));
       })
       .catch((err) => res.json(err));
   }
@@ -190,3 +197,106 @@ module.exports = router;
 //     })
 //     .catch((err) => res.json(err));
 // })
+
+// router.post('/upload/:patientId', async (req, res) => {
+//   console.log(req.body);
+//   const { patientId } = req.params;
+//   const {
+//     machineId,
+//     fillVolume,
+//     dwellTime,
+//     expectedUF,
+//     totalCycles,
+//     lastFill,
+//     lastFillVolume,
+//     numberOfBags,
+//     maxDrain,
+//   } = req.body.newPrescription;
+//   let lastFillBoolean;
+//   if (lastFill) {
+//     lastFillBoolean = 1;
+//   } else {
+//     lastFillBoolean = 0;
+//   }
+//   if (maxDrain < fillVolume + expectedUF) {
+//     res.json({ err: 'No' });
+//   } else {
+//     const content =
+//       'CYCLES ' +
+//       totalCycles +
+//       '\n' +
+//       'FILL_VOLUME_ML ' +
+//       fillVolume +
+//       '\n' +
+//       'MIN_INITIAL_DRAIN_VOLUME_ML 0\n' +
+//       'MAX_INITIAL_DRAIN_VOLUME_ML 4000\n' +
+//       'MAX_DRAIN_VOLUME_ML ' +
+//       maxDrain +
+//       '\n' +
+//       'MAX_NEGATIVE_UF_PERCENTAGE 10\n' +
+//       'PUSHBACK_VOLUME_ML 50\n' +
+//       'TARGET_UF_ML ' +
+//       expectedUF +
+//       '\n' +
+//       'PERCENTAGE_TARGET_UF 70\n' +
+//       'DWELL_TIME_SECONDS ' +
+//       dwellTime +
+//       '\n' +
+//       'DRAIN_TIMEOUT_SECONDS 900\n' +
+//       'NUMBER_OF_BAGS ' +
+//       numberOfBags +
+//       '\n' + // / 1 TO 3
+//       'BAG_VOLUME_ML 2000\n' +
+//       'DEXTROSE_PERCENTAGE 0\n' +
+//       'LAST_FILL_BOOLEAN ' +
+//       lastFillBoolean +
+//       '\n' +
+//       'LAST_FILL_VOLUME_ML ' +
+//       lastFillVolume +
+//       '\n' +
+//       'MAX_CUMULATIVE_BUBBLES_CC 5\n' +
+//       'MAX_ALLOWED_BUBBLE_SIZE_CC 5\n' +
+//       'MAX_POSITIVE_UF_ML 1750\n' +
+//       'CUMULATIVE_LOW_UF_CYCLES 3\n' +
+//       'MAX_CUMULATIVE_POSITIVE_UF_ML 3000\n' +
+//       'BAG_VOLUME_ML_1 2100\n' +
+//       'BAG_VOLUME_ML_2 4200\n' +
+//       'BAG_VOLUME_ML_3 4400\n' +
+//       'BAG_VOLUME_ML_4 4000\n' +
+//       'BAG_VOLUME_ML_5 5000\n';
+
+//     await Prescription.create({
+//       dwellTime,
+//       fillVolume,
+//       expectedUF,
+//       totalCycles,
+//       lastFill,
+//       patientId,
+//       machineId,
+//       lastFillVolume,
+//       maxDrain,
+//       numberOfBags,
+//     })
+//       .then((pres) => {
+//         const dir = `files/${pres.patientId}`;
+//         if (!fs.existsSync(dir)) {
+//           fs.mkdirSync(dir);
+//         }
+//         const dir1 = `files/${pres.patientId}/prescriptions`;
+//         if (!fs.existsSync(dir1)) {
+//           fs.mkdirSync(dir1);
+//         }
+//         fs.writeFile(
+//           `files/${pres.patientId}/prescriptions/${pres.patientId}_current.txt`,
+//           content,
+//           { recursive: true },
+//           (err) => {
+//             if (err) throw err;
+//             console.log('file created');
+//           },
+//         );
+//         res.json('success');
+//       })
+//       .catch((err) => res.json(err));
+//   }
+// });
