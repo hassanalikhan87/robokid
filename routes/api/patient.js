@@ -17,6 +17,29 @@ router.post('/', async (req, res) => {
     dateOfBirth,
   } = req.body.newPatient;
 
+  const dir = `files/${patientId}`;
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
+  const dir1 = `${dir}/prescriptions`;
+  if (!fs.existsSync(dir1)) {
+    fs.mkdirSync(dir1);
+  }
+  const dir3 = `${dir}/reports`;
+  if (!fs.existsSync(dir3)) {
+    fs.mkdirSync(dir3);
+  }
+
+  fs.writeFile(
+    `${dir1}/${patientId}_current.txt`,
+    'no content',
+    { recursive: true },
+    (err) => {
+      if (err) throw err;
+      console.log('file created');
+    },
+  );
+
   await Patient.create({
     patientId,
     doctorId,
@@ -28,28 +51,9 @@ router.post('/', async (req, res) => {
   })
     .then((patient) => {
       console.log(patient);
-      const dir = `files/${patient.patientId}`;
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-      }
-      const dir1 = `files/${patient.patientId}/prescriptions`;
-      if (!fs.existsSync(dir1)) {
-        fs.mkdirSync(dir1);
-      }
+
       console.log(patient);
-      const dir3 = `files/${patient.patientId}/reports`;
-      if (!fs.existsSync(dir3)) {
-        fs.mkdirSync(dir3);
-      }
-      fs.writeFile(
-        `files/${patient.patientId}/prescriptions/${patient.patientId}_current.txt`,
-        'no content',
-        { recursive: true },
-        (err) => {
-          if (err) throw err;
-          console.log('file created');
-        },
-      );
+
       res.json(patient);
     })
     .catch((err) => res.json(err));
