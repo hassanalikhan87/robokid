@@ -42,3 +42,5 @@ app.listen(PORT, async () => {
   await sequelize.authenticate();
   console.log('Connected to PostgreSQL');
 });
+
+//26/04/21
