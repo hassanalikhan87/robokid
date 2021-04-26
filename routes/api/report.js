@@ -3,7 +3,6 @@ const router = express.Router();
 const csv = require('csvtojson');
 const formidable = require('formidable');
 const fs = require('fs');
-const path = require('path');
 
 const d = new Date();
 const utc = d.toUTCString();
@@ -15,7 +14,7 @@ const md = dd < 10 ? '-0' : '-';
 const date = yyyy + ym + mm + md + dd;
 
 router.post('/upload/:patientId', (req, res) => {
-  console.log(req.body);
+  console.log('body', req.body);
   console.log('filepathhassan', req.body.file);
   const form = new formidable.IncomingForm();
   const { patientId } = req.params;
@@ -37,7 +36,7 @@ router.post('/upload/:patientId', (req, res) => {
     if (!fs.existsSync(destPath)) {
       fs.mkdirSync(destPath);
     }
-    fs.rename(oldPath, newPath, function (err) {
+    fs.copyFile(oldPath, newPath, function (err) {
       if (err) throw err;
       res.send('success');
       res.end();
