@@ -1,0 +1,5 @@
+Initial Drain, Cycle, Fill, Drain, UF, Last Fill, Fill Time, Drain Time
+404,ID,-,-,-,-,-,5
+-,0,400,402,2,-,192,335
+-,1,400,402,2,-,192,354
+-,LF,-,-,-,400,3,
