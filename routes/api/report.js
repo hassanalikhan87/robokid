@@ -21,6 +21,7 @@ router.post('/upload/:patientId', (req, res) => {
     fs.mkdirSync(dir);
   }
   form.parse(req, (err, fields, files) => {
+    console.log(files);
     const oldPath = files.file.path;
     const destPath = `files/${patientId}/reports/${date}`;
     const ext = `/${utc}.csv`;
