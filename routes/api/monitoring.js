@@ -6,6 +6,7 @@ const { LiveReadings } = require('../../models');
 //METHOD POST
 
 router.put('/:patientId', async (req, res) => {
+  console.log(req.body);
   const { patientId } = req.params;
   const {
     volume,
