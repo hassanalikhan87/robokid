@@ -14,8 +14,8 @@ const md = dd < 10 ? '-0' : '-';
 const date = yyyy + ym + mm + md + dd;
 
 router.post('/upload/:patientId', (req, res) => {
-  console.log('body', req.body);
-  console.log('filepathhassan', req.body.file);
+  // console.log('body', req.body);
+  // console.log('filepathhassan', req.body.file);
   const form = new formidable.IncomingForm();
   const { patientId } = req.params;
   const dir = `files/${patientId}/reports`;

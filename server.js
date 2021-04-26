@@ -1,9 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
-const path = require('path');
+// const path = require('path');
 
-const dirPath = path.join(__dirname, '/files');
+// const dirPath = path.join(__dirname, '/files');
 // fs.mkdirSync(dirPath);
 
 //importing routes
@@ -39,7 +39,7 @@ app.use('/api/doctor', doctor);
 app.use('/api/monitoring', monitoring);
 app.use('/api/image', image);
 app.use('/ping', ping);
-express.static(path.join(__dirname, '/public'));
+// express.static(path.join(__dirname, '/public'));
 
 // server listening
 app.listen(PORT, async () => {
