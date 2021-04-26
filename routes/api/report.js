@@ -16,7 +16,7 @@ const date = yyyy + ym + mm + md + dd;
 
 router.post('/upload/:patientId', (req, res) => {
   console.log(req.body);
-  console.log('filepathhassan', req.body.file.path);
+  console.log('filepathhassan', req.body.file);
   const form = new formidable.IncomingForm();
   const { patientId } = req.params;
   const dir = `files/${patientId}/reports`;
@@ -24,6 +24,7 @@ router.post('/upload/:patientId', (req, res) => {
     fs.mkdirSync(dir);
   }
   form.parse(req, (err, fields, files) => {
+    console.log(fields);
     console.log('filename');
     console.log(files);
     console.log('/filename');
