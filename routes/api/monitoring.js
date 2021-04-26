@@ -53,7 +53,7 @@ router.put('/:patientId', async (req, res) => {
           },
           { where: { patientId } },
         )
-          .then((vol) => res.json('Go'))
+          .then((vol) => res.json('Gooo'))
           .catch((err) => {
             console.log(err);
             res.json(err);
@@ -98,7 +98,7 @@ router.get('/:patientId', async (req, res) => {
       if (obj.isActive) {
         const limit = Date.now() - Date.parse(obj.updatedAt);
         console.log('limit1', limit);
-        if (limit > 60000) {
+        if (limit > 20000) {
           console.log(22);
           return LiveReadings.update(
             {
