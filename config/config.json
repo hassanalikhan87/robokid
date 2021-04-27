@@ -14,7 +14,7 @@
     "dialect": "postgres"
   },
   "production": {
-    "use_env_variable": "rvxvlswceedgdk:89ad3731e40da42ea594a0dac393f46e27fe9a97142ff95b1e1bed6fc990abb2@ec2-52-4-177-4.compute-1.amazonaws.com:5432/da6lkm0ngoggpo",
+    "use_env_variable": "DATABASE_URL",
     "dialect": "postgres",
     "protocol": "postgres",
     "port": 5432,
