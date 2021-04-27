@@ -19,8 +19,10 @@ router.post('/', async (req, res) => {
 
   const dir = `files/${patientId}`;
   if (!fs.existsSync(dir)) {
+    console.log('making');
     fs.mkdirSync(dir);
   }
+  console.log('notmaking');
   const dir1 = `${dir}/prescriptions`;
   if (!fs.existsSync(dir1)) {
     fs.mkdirSync(dir1);
