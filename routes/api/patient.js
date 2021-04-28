@@ -25,16 +25,37 @@ router.post('/', async (req, res) => {
   const dir = `files/${patientId}`;
   if (!fs.existsSync(dir)) {
     console.log('making');
-    fs.mkdir(dir);
+    fs.mkdir(dir, (err) => {
+      if (err) {
+        console.log('failed to create directory ' + dir);
+        return console.error(err);
+      } else {
+        console.log(dir + ' Directory created successfully');
+      }
+    });
   }
   console.log('notmaking');
   const dir1 = `${dir}/prescriptions`;
   if (!fs.existsSync(dir1)) {
-    fs.mkdir(dir1);
+    fs.mkdir(dir1, (err) => {
+      if (err) {
+        console.log('failed to create ' + dir1);
+        return console.error(err);
+      } else {
+        console.log(dir1 + ' Directory created successfully');
+      }
+    });
   }
   const dir3 = `${dir}/reports`;
   if (!fs.existsSync(dir3)) {
-    fs.mkdir(dir3);
+    fs.mkdir(dir3, (err) => {
+      if (err) {
+        console.log('failed to create directory ' + dir3);
+        return console.error(err);
+      } else {
+        console.log(dir3 + ' Directory created successfully');
+      }
+    });
   }
 
   fs.writeFile(
