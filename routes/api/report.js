@@ -21,8 +21,8 @@ router.post('/upload/:patientId', (req, res) => {
 
   const dir = `files/${patientId}`;
   if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, () => {
-      console.log('dir');
+    fs.mkdirSync(dir).catch((err) => {
+      console.log(err);
     });
   }
   const dir1 = `${dir}/reports`;
@@ -39,7 +39,10 @@ router.post('/upload/:patientId', (req, res) => {
       fs.mkdirSync(destPath);
     }
     fs.copyFile(oldPath, newPath, function (err) {
-      if (err) throw err;
+      if (err) {
+        console.log(err);
+        res.send(err);
+      }
       res.send('success');
       res.end();
     });
