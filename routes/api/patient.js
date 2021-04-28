@@ -16,36 +16,16 @@ router.post('/', async (req, res) => {
     email,
     dateOfBirth,
   } = req.body.newPatient;
-
-  if (!fs.existsSync('/app/files')) {
-    console.log('making');
-    fs.mkdir('/app/files');
+  if (!fs.existsSync('files')) {
+    fs.mkdirSync('files');
   }
 
-  const dir = `/app/files/${patientId}`;
-  if (!fs.existsSync(dir)) {
-    console.log('making');
-    fs.mkdir(dir, (err) => {
-      if (err) {
-        console.log('failed to create directory ' + dir);
-        return console.error(err);
-      } else {
-        console.log(dir + ' Directory created successfully');
-      }
-    });
-  }
-  console.log('notmaking');
+  const dir = `files/${patientId}`;
+  fs.mkdirSync(dir);
+
   const dir1 = `${dir}/prescriptions`;
-  if (!fs.existsSync(dir1)) {
-    fs.mkdir(dir1, (err) => {
-      if (err) {
-        console.log('failed to create ' + dir1);
-        return console.error(err);
-      } else {
-        console.log(dir1 + ' Directory created successfully');
-      }
-    });
-  }
+
+  fs.mkdirSync(dir1);
   const dir3 = `${dir}/reports`;
   if (!fs.existsSync(dir3)) {
     fs.mkdir(dir3, (err) => {
@@ -78,10 +58,6 @@ router.post('/', async (req, res) => {
     dateOfBirth,
   })
     .then((patient) => {
-      console.log(patient);
-
-      console.log(patient);
-
       res.json(patient);
     })
     .catch((err) => res.json(err));
