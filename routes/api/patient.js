@@ -17,6 +17,11 @@ router.post('/', async (req, res) => {
     dateOfBirth,
   } = req.body.newPatient;
 
+  if (!fs.existsSync('files')) {
+    console.log('making');
+    fs.mkdirSync('files');
+  }
+
   const dir = `files/${patientId}`;
   if (!fs.existsSync(dir)) {
     console.log('making');
