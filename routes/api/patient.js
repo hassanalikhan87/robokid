@@ -19,22 +19,22 @@ router.post('/', async (req, res) => {
 
   if (!fs.existsSync('files')) {
     console.log('making');
-    fs.mkdirSync('files');
+    fs.mkdir('files');
   }
 
   const dir = `files/${patientId}`;
   if (!fs.existsSync(dir)) {
     console.log('making');
-    fs.mkdirSync(dir);
+    fs.mkdir(dir);
   }
   console.log('notmaking');
   const dir1 = `${dir}/prescriptions`;
   if (!fs.existsSync(dir1)) {
-    fs.mkdirSync(dir1);
+    fs.mkdir(dir1);
   }
   const dir3 = `${dir}/reports`;
   if (!fs.existsSync(dir3)) {
-    fs.mkdirSync(dir3);
+    fs.mkdir(dir3);
   }
 
   fs.writeFile(
