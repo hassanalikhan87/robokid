@@ -18,9 +18,12 @@ router.post('/upload/:patientId', (req, res) => {
   // console.log('filepathhassan', req.body.file);
   const form = new formidable.IncomingForm();
   const { patientId } = req.params;
+
   const dir = `files/${patientId}`;
   if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
+    fs.mkdirSync(dir, () => {
+      console.log('dir');
+    });
   }
   const dir1 = `${dir}/reports`;
   if (!fs.existsSync(dir1)) {
