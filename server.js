@@ -21,6 +21,29 @@ aws.config.region = 'us-east-2';
 
 const S3_BUCKET = process.env.S3_BUCKET;
 
+//Server SetUp
+const app = express();
+
+//sequelize
+const { sequelize } = require('./models');
+
+//middleware
+app.use(cors());
+
+app.use(express.json()); //req.body
+
+//declaring port
+var PORT = process.env.PORT || 5000;
+
+// const test = app.address()
+//ROUTES//
+app.use('/api/prescription', prescription);
+app.use('/api/report', report);
+app.use('/api/patient', patient);
+app.use('/api/doctor', doctor);
+app.use('/api/monitoring', monitoring);
+app.use('/api/image', image);
+app.use('/ping', ping);
 app.get('/s', (req, res) => {
   const s3 = new aws.S3();
   const fileName = req.query['file-name'];
@@ -46,30 +69,6 @@ app.get('/s', (req, res) => {
     res.end();
   });
 });
-
-//Server SetUp
-const app = express();
-
-//sequelize
-const { sequelize } = require('./models');
-
-//middleware
-app.use(cors());
-
-app.use(express.json()); //req.body
-
-//declaring port
-var PORT = process.env.PORT || 5000;
-
-// const test = app.address()
-//ROUTES//
-app.use('/api/prescription', prescription);
-app.use('/api/report', report);
-app.use('/api/patient', patient);
-app.use('/api/doctor', doctor);
-app.use('/api/monitoring', monitoring);
-app.use('/api/image', image);
-app.use('/ping', ping);
 
 // server listening
 app.listen(PORT, async () => {
