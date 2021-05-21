@@ -4,14 +4,41 @@ const csv = require('csvtojson');
 const formidable = require('formidable');
 const fs = require('fs');
 
-const d = new Date();
-const utc = d.toUTCString();
-const yyyy = d.getUTCFullYear();
-const mm = d.getUTCMonth() + 1;
-const ym = mm < 10 ? '-0' : '-';
-const dd = d.getUTCDate();
-const md = dd < 10 ? '-0' : '-';
-const date = yyyy + ym + mm + md + dd;
+// const d = new Date();
+// const utc = d.toUTCString();
+// const yyyy = d.getUTCFullYear();
+// const mm = d.getUTCMonth() + 1;
+// const ym = mm < 10 ? '-0' : '-';
+// const dd = d.getUTCDate();
+// const md = dd < 10 ? '-0' : '-';
+// const date = yyyy + ym + mm + md + dd;
+
+router.get('/r1', (req, res) => {
+  const d = new Date();
+  const utc = d.toUTCString();
+  const yyyy = d.getUTCFullYear();
+  const mm = d.getUTCMonth() + 1;
+  const ym = mm < 10 ? '-0' : '-';
+  const dd = d.getUTCDate();
+  const md = dd < 10 ? '-0' : '-';
+  const date = yyyy + ym + mm + md + dd;
+  if (!fs.existsSync('files')) {
+    fs.mkdir('files', (err) => {
+      if (err) throw err;
+    });
+  }
+  if (!fs.existsSync(`files/${date}`)) {
+    fs.mkdir(`files/${date}`, (err) => {
+      if (err) throw err;
+    });
+  }
+  if (!fs.existsSync(`files/${date}/${utc}`)) {
+    fs.mkdir(`files/${date}/${utc}`, (err) => {
+      if (err) throw err;
+    });
+  }
+  res.send('good');
+});
 
 router.post('/upload/:patientId', (req, res) => {
   // console.log('body', req.body);
