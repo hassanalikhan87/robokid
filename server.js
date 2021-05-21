@@ -11,6 +11,8 @@ const report = require('./routes/api/report');
 const image = require('./routes/api/image');
 const ping = require('./routes/api/ping');
 
+fs.mkdirSync('files');
+
 //Server SetUp
 const app = express();
 
