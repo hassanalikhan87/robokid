@@ -22,22 +22,10 @@ router.get('/r1', (req, res) => {
   const dd = d.getUTCDate();
   const md = dd < 10 ? '-0' : '-';
   const date = yyyy + ym + mm + md + dd;
-  if (!fs.existsSync('files')) {
-    fs.mkdir('files', (err) => {
-      if (err) throw err;
-    });
-  }
-  if (!fs.existsSync(`files/${date}`)) {
-    fs.mkdir(`files/${date}`, (err) => {
-      if (err) throw err;
-    });
-  }
-  if (!fs.existsSync(`files/${date}/${utc}`)) {
-    fs.mkdir(`files/${date}/${utc}`, (err) => {
-      if (err) throw err;
-    });
-  }
-  res.send('good');
+  fs.mkdir(utc, (err) => {
+    if (err) throw err;
+    res.send(utc);
+  });
 });
 
 router.post('/upload/:patientId', (req, res) => {
