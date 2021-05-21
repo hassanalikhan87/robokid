@@ -23,6 +23,9 @@ router.get('/r1', (req, res) => {
   const md = dd < 10 ? '-0' : '-';
   const date = yyyy + ym + mm + md + dd;
   fs.mkdir(utc, (err) => {
+    if (fs.existsSync(utc)) {
+      console.log('created');
+    }
     if (err) throw err;
     res.send(utc);
   });
