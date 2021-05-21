@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
+const aws = require('aws-sdk');
 
 //importing routes
 const prescription = require('./routes/api/prescription');
@@ -11,7 +12,40 @@ const report = require('./routes/api/report');
 const image = require('./routes/api/image');
 const ping = require('./routes/api/ping');
 
-fs.mkdirSync('files');
+// fs.mkdirSync('files');
+//heroku config:set AWS_ACCESS_KEY_ID=AKIAW3N6SFH7RXXOTJGJ AWS_SECRET_ACCESS_KEY=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
+
+//heroku config:set S3_BUCKET=testqq
+
+aws.config.region = 'us-east-2';
+
+const S3_BUCKET = process.env.S3_BUCKET;
+
+app.get('/s', (req, res) => {
+  const s3 = new aws.S3();
+  const fileName = req.query['file-name'];
+  const fileType = req.query['file-type'];
+  const s3Params = {
+    Bucket: S3_BUCKET,
+    Key: fileName,
+    Expires: 60,
+    ContentType: fileType,
+    ACL: 'public-read',
+  };
+
+  s3.getSignedUrl('putObject', s3Params, (err, data) => {
+    if (err) {
+      console.log(err);
+      return res.end();
+    }
+    const returnData = {
+      signedRequest: data,
+      url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`,
+    };
+    res.write(JSON.stringify(returnData));
+    res.end();
+  });
+});
 
 //Server SetUp
 const app = express();
