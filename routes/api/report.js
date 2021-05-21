@@ -14,6 +14,7 @@ const fs = require('fs');
 // const date = yyyy + ym + mm + md + dd;
 
 router.get('/r1', (req, res) => {
+  console.log(req.query);
   const d = new Date();
   const utc = d.toUTCString();
   const yyyy = d.getUTCFullYear();
