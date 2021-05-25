@@ -11,7 +11,6 @@ router.put('/:patientId', async (req, res) => {
   const {
     volume,
     ipc_states,
-    currentState,
     cycles,
     therapyTime,
     patientPressure,
@@ -24,6 +23,21 @@ router.put('/:patientId', async (req, res) => {
     targetVolume,
     isActive,
   } = req.body;
+
+  let state;
+  if (ipc_states == 0) {
+    state = 'FILL';
+  } else if (ipc_states == 1) {
+    state = 'DWELL';
+  } else if (ipc_states == 2) {
+    state = 'DRAIN';
+  } else if (ipc_states == 3) {
+    state = 'INITIAL DRAIN';
+  } else if (ipc_states == 5) {
+    state = 'LAST FILL';
+  } else {
+    state = 'Error';
+  }
 
   console.log(req.body);
   console.log(patientId, volume);
@@ -39,7 +53,7 @@ router.put('/:patientId', async (req, res) => {
           {
             volume,
             ipc_states,
-            currentState,
+            currentState: state,
             cycles,
             therapyTime,
             patientPressure,
@@ -67,7 +81,7 @@ router.put('/:patientId', async (req, res) => {
           patientId,
           volume,
           ipc_states,
-          currentState,
+          currentState: state,
           cycles,
           therapyTime,
           patientPressure,
@@ -112,10 +126,7 @@ router.get('/:patientId', async (req, res) => {
             })
             .catch((err) => console.log(err));
         }
-        console.log('limit2', limit);
-        // console.log(Date.parse(obj.updatedAt));
-        // console.log(obj.updatedAt);
-        // console.log(Date.now());
+        // console.log('limit2', limit);
         res.json(obj);
       } else {
         res.json(obj);

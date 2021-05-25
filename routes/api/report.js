@@ -3,6 +3,8 @@ const router = express.Router();
 const csv = require('csvtojson');
 const formidable = require('formidable');
 const fs = require('fs');
+const AWS = require('aws-sdk');
+const path = require('path');
 
 // const d = new Date();
 // const utc = d.toUTCString();
@@ -13,10 +15,21 @@ const fs = require('fs');
 // const md = dd < 10 ? '-0' : '-';
 // const date = yyyy + ym + mm + md + dd;
 
+const ID = 'AKIAW3N6SFH7RXXOTJGJ';
+const SECRET = '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';
+const BUCKET_NAME = 'testqq';
+
+AWS.config.update({
+  accessKeyId: ID,
+  secretAccessKey: SECRET,
+});
+
+const s3 = new AWS.S3();
+
 router.get('/r1', (req, res) => {
   console.log(req.query);
   const d = new Date();
-  const utc = d.toUTCString();
+  // const utc = d.toUTCString();
   const yyyy = d.getUTCFullYear();
   const mm = d.getUTCMonth() + 1;
   const ym = mm < 10 ? '-0' : '-';
@@ -33,37 +46,34 @@ router.get('/r1', (req, res) => {
 });
 
 router.post('/upload/:patientId', (req, res) => {
-  // console.log('body', req.body);
-  // console.log('filepathhassan', req.body.file);
   const form = new formidable.IncomingForm();
   const { patientId } = req.params;
+  const d = new Date();
+  const utc = d.toUTCString();
+  const yyyy = d.getUTCFullYear();
+  const mm = d.getUTCMonth() + 1;
+  const ym = mm < 10 ? '-0' : '-';
+  const dd = d.getUTCDate();
+  const md = dd < 10 ? '-0' : '-';
+  const date = yyyy + ym + mm + md + dd;
 
-  const dir = `files/${patientId}`;
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir).catch((err) => {
-      console.log(err);
-    });
-  }
-  const dir1 = `${dir}/reports`;
-  if (!fs.existsSync(dir1)) {
-    fs.mkdirSync(dir1);
-  }
   form.parse(req, (err, fields, files) => {
     const oldPath = files.file.path;
-    const destPath = `files/${patientId}/reports/${date}`;
-    const ext = `/${utc}.csv`;
-    const newPath = destPath + ext;
-
-    if (!fs.existsSync(destPath)) {
-      fs.mkdirSync(destPath);
-    }
-    fs.copyFile(oldPath, newPath, function (err) {
+    const destPath = `${patientId}/reports/${date}/${utc}.csv`;
+    const params = {
+      Bucket: BUCKET_NAME,
+      Body: fs.createReadStream(oldPath),
+      Key: destPath,
+    };
+    s3.upload(params, (err, data) => {
       if (err) {
-        console.log(err);
-        res.send(err);
+        console.log('Error', err);
       }
-      res.send('success');
-      res.end();
+      if (data) {
+        console.log('Uploaded in', data.Location);
+        res.send(data.Location);
+        res.end();
+      }
     });
   });
 });
@@ -71,38 +81,72 @@ router.post('/upload/:patientId', (req, res) => {
 //Access Patient Report List for APP
 router.get('/daily/:patientId', async (req, res) => {
   const { patientId } = req.params;
-  const dir = `files/${patientId}/reports/`;
-
-  const dates = fs.readdirSync(dir);
-  const data = dates.map((date) => {
-    const subfolder = fs.readdirSync(dir + date);
-    // console.log(zz);
-    const reports = subfolder.map((sf) => sf.split('.')[0]);
-    return { date, reports };
+  const dir = `${patientId}/reports/`;
+  const params = {
+    Bucket: BUCKET_NAME,
+    Prefix: dir,
+  };
+  s3.listObjects(params, (err, data) => {
+    if (err) {
+      console.log(err);
+    }
+    res.json(
+      data.Contents.map((key) => key.Key.split('/')[2])
+        .filter((c, index) => {
+          return (
+            data.Contents.map((key) => key.Key.split('/')[2]).indexOf(c) ===
+            index
+          );
+        })
+        .reverse(),
+    );
   });
-  res.json(data.reverse());
+  // });
+
+  // const dates = fs.readdirSync(dir);
+  // const data = dates.map((date) => {
+  //   const subfolder = fs.readdirSync(dir + date);
+  //   // console.log(zz);
+  //   const reports = subfolder.map((sf) => sf.split('.')[0]);
+  //   return { date, reports };
+  // });
+  // res.json(data.reverse());
 });
 
 router.get('/list/:date/:patientId', (req, res) => {
   const { patientId } = req.params;
   const { date } = req.params;
   console.log(req.params);
-  const dir = `files/${patientId}/reports/${date}`;
-  if (!fs.existsSync(dir)) {
-    res.send('Wrong Path');
-  } else {
-    fs.readdir(dir, (err, files) => {
-      list = files.map((fl) => fl.split('.')[0]);
-      // res.send(files.reverse());
-      console.log(list);
-      res.send(list.reverse());
-    });
-  }
+  const dir = `${patientId}/reports/${date}`;
+
+  const params = {
+    Bucket: BUCKET_NAME,
+    Prefix: dir,
+  };
+  s3.listObjects(params, (err, data) => {
+    if (err) {
+      console.log(err);
+    }
+    res.json(
+      data.Contents.map((key) => key.Key.split('/')[3].split('.')[0]).reverse(),
+    );
+  });
+  // if (!fs.existsSync(dir)) {
+  //   res.send('Wrong Path');
+  // } else {
+  //   fs.readdir(dir, (err, files) => {
+  //     list = files.map((fl) => fl.split('.')[0]);
+  //     // res.send(files.reverse());
+  //     console.log(list);
+  //     res.send(list.reverse());
+  //   });
+  // }
 });
 
 //Access Patient Report for APP
 router.get('/report/:patientId/:date', async (req, res) => {
   const { patientId, date } = req.params;
+
   console.log(req.params);
   console.log(new Date(date).getUTCDate());
   const day = new Date(date).getUTCDate();
@@ -112,17 +156,25 @@ router.get('/report/:patientId/:date', async (req, res) => {
   const daySeparator = day < 10 ? '0' : '';
   const dirname = `${year}-${monthSeparator + month}-${daySeparator + day}`;
   console.log(dirname);
-  const file = `files/${patientId}/reports/${dirname}/${date}.csv`;
-  console.log(file);
-  csv()
-    .fromFile(file)
-    .then((jsonObj) => {
-      console.log(jsonObj);
-      const jsn = JSON.stringify(jsonObj).replace(/[ ]/g, '');
-      console.log(jsn);
-      res.json(JSON.parse(jsn));
-      // fs.writeFileSync(destPath + '/' + utc + '.json', jsn);
-    });
+  const file = `${patientId}/reports/${dirname}/${date}.csv`;
+  const params = {
+    Bucket: BUCKET_NAME,
+    Key: file,
+  };
+  s3.getObject(params, (err, data) => {
+    if (err) {
+      console.log('ERROR', err);
+    }
+    if (data) {
+      csv()
+        .fromString(data.Body.toString())
+        .then((jsonObj) => {
+          const jsn = JSON.stringify(jsonObj).replace(/[ ]/g, '');
+          console.log(JSON.parse(jsn));
+          res.json(JSON.parse(jsn));
+        });
+    }
+  });
 });
 
 module.exports = router;

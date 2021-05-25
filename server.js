@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
-const aws = require('aws-sdk');
+const AWS = require('aws-sdk');
+const path = require('path');
 
 //importing routes
 const prescription = require('./routes/api/prescription');
@@ -12,14 +13,43 @@ const report = require('./routes/api/report');
 const image = require('./routes/api/image');
 const ping = require('./routes/api/ping');
 
-// fs.mkdirSync('files');
-//heroku config:set AWS_ACCESS_KEY_ID=AKIAW3N6SFH7RXXOTJGJ AWS_SECRET_ACCESS_KEY=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
+const ID = 'AKIAW3N6SFH7RXXOTJGJ';
+const SECRET = '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';
+const BUCKET_NAME = 'testqq';
 
-//heroku config:set S3_BUCKET=testqq
+AWS.config.update({
+  accessKeyId: ID,
+  secretAccessKey: SECRET,
+});
 
-aws.config.region = 'us-east-2';
+const s3 = new AWS.S3();
+const filePath = './test.txt';
 
-const S3_BUCKET = process.env.S3_BUCKET;
+const params = {
+  Bucket: BUCKET_NAME,
+  // Body: fs.createReadStream(filePath),
+  Key: `AAA/prescriptions/AAA_current.txt`,
+};
+// s3.upload(params, (err, data) => {
+//   if (err) {
+//     console.log('Error', err);
+//   }
+//   if (data) {
+//     console.log('Uploaded in', data.Location);
+//   }
+// });
+
+// s3.getObject(params, (err, data) => {
+//   if (err) {
+//     console.log('ERROR', err);
+//   }
+//   if (data) {
+//     console.log('DATA', data.Body.toString());
+//     // fs.writeFileSync(`./${Date.now()}.txt`, data.Body);
+//   }
+// });
+const t = fs.readFileSync('2021-02-02-14-06-41.csv');
+console.log(t);
 
 //Server SetUp
 const app = express();
@@ -44,32 +74,6 @@ app.use('/api/doctor', doctor);
 app.use('/api/monitoring', monitoring);
 app.use('/api/image', image);
 app.use('/ping', ping);
-app.get('/s', (req, res) => {
-  const s3 = new aws.S3();
-  const fileName = req.query['file-name'];
-  const fileType = req.query['file-type'];
-  const s3Params = {
-    Bucket: S3_BUCKET,
-    Key: fileName,
-    Expires: 60,
-    ContentType: fileType,
-    ACL: 'public-read',
-  };
-
-  s3.getSignedUrl('putObject', s3Params, (err, data) => {
-    if (err) {
-      console.log(err);
-      return res.end();
-    }
-    const returnData = {
-      signedRequest: data,
-      url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`,
-    };
-    res.send('test');
-    // res.write(JSON.stringify(returnData));
-    res.end();
-  });
-});
 
 // server listening
 app.listen(PORT, async () => {
