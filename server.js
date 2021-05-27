@@ -1,8 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs');
-const AWS = require('aws-sdk');
-const path = require('path');
 
 //importing routes
 const prescription = require('./routes/api/prescription');
@@ -13,23 +10,6 @@ const report = require('./routes/api/report');
 const image = require('./routes/api/image');
 const ping = require('./routes/api/ping');
 
-const ID = 'AKIAW3N6SFH7RXXOTJGJ';
-const SECRET = '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';
-const BUCKET_NAME = 'testqq';
-
-AWS.config.update({
-  accessKeyId: ID,
-  secretAccessKey: SECRET,
-});
-
-const s3 = new AWS.S3();
-const filePath = './test.txt';
-
-const params = {
-  Bucket: BUCKET_NAME,
-  // Body: fs.createReadStream(filePath),
-  Key: `AAA/prescriptions/AAA_current.txt`,
-};
 // s3.upload(params, (err, data) => {
 //   if (err) {
 //     console.log('Error', err);
@@ -48,8 +28,6 @@ const params = {
 //     // fs.writeFileSync(`./${Date.now()}.txt`, data.Body);
 //   }
 // });
-const t = fs.readFileSync('2021-02-02-14-06-41.csv');
-console.log(t);
 
 //Server SetUp
 const app = express();

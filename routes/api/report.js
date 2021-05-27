@@ -15,8 +15,8 @@ const path = require('path');
 // const md = dd < 10 ? '-0' : '-';
 // const date = yyyy + ym + mm + md + dd;
 
-const ID = 'AKIAW3N6SFH7RXXOTJGJ';
-const SECRET = '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';
+const ID = 'AKIAW3N6SFH7VAQWMM2D';
+const SECRET = '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';
 const BUCKET_NAME = 'testqq';
 
 AWS.config.update({
@@ -166,6 +166,11 @@ router.get('/report/:patientId/:date', async (req, res) => {
       console.log('ERROR', err);
     }
     if (data) {
+      console.log('DATA', data.Body.toString());
+      fs.writeFile('fakereport.csv', data.Body, (err) => {
+        if (err) throw err;
+        console.log('saved');
+      });
       csv()
         .fromString(data.Body.toString())
         .then((jsonObj) => {
