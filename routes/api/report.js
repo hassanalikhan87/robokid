@@ -167,12 +167,11 @@ router.get('/report/:patientId/:date', async (req, res) => {
     }
     if (data) {
       console.log('DATA', data.Body.toString());
-      fs.writeFile('fakereport.csv', data.Body, (err) => {
-        if (err) throw err;
-        console.log('saved');
-      });
+      const file = data.Body.toString().split('\n');
+      const fileArray = file.splice(0, 1);
+      const newFile = file.join('\n');
       csv()
-        .fromString(data.Body.toString())
+        .fromString(newFile)
         .then((jsonObj) => {
           const jsn = JSON.stringify(jsonObj).replace(/[ ]/g, '');
           console.log(JSON.parse(jsn));
