@@ -168,7 +168,7 @@ router.get('/report/:patientId/:date', async (req, res) => {
     if (data) {
       console.log('DATA', data.Body.toString());
       const file = data.Body.toString().split('\n');
-      const fileArray = file.splice(0, 1);
+      file.splice(0, 1);
       const newFile = file.join('\n');
       csv()
         .fromString(newFile)
