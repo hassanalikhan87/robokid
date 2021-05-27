@@ -174,8 +174,13 @@ router.get('/report/:patientId/:date', async (req, res) => {
         .fromString(newFile)
         .then((jsonObj) => {
           const jsn = JSON.stringify(jsonObj).replace(/[ ]/g, '');
-          console.log(JSON.parse(jsn));
-          res.json(JSON.parse(jsn));
+          const output = JSON.parse(jsn);
+          if (output[0].InitialDrain < 0) {
+            output[0].InitialDrain = output[0].InitialDrain * -1;
+            console.log(output[0].InitialDrain);
+          }
+          console.log(output[0].InitialDrain);
+          res.json(output);
         });
     }
   });
