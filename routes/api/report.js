@@ -168,18 +168,24 @@ router.get('/report/:patientId/:date', async (req, res) => {
     if (data) {
       console.log('DATA', data.Body.toString());
       const file = data.Body.toString().split('\n');
-      file.splice(0, 1);
-      const newFile = file.join('\n');
+      const dat = file
+        .map((f) => {
+          if (f[0] === '-') {
+            f = '-,-,-,-,' + f;
+          }
+          return f;
+        })
+        .join('\n');
       csv()
-        .fromString(newFile)
+        .fromString(dat)
+        // .fromString(newFile)
         .then((jsonObj) => {
           const jsn = JSON.stringify(jsonObj).replace(/[ ]/g, '');
           const output = JSON.parse(jsn);
-          if (output[0].InitialDrain < 0) {
-            output[0].InitialDrain = output[0].InitialDrain * -1;
-            console.log(output[0].InitialDrain);
-          }
-          console.log(output[0].InitialDrain);
+          // if (output[0].InitialDrain < 0) {
+          //   output[0].InitialDrain = output[0].InitialDrain * -1;
+          //   console.log(output[0].InitialDrain);
+          // }
           res.json(output);
         });
     }
@@ -187,3 +193,99 @@ router.get('/report/:patientId/:date', async (req, res) => {
 });
 
 module.exports = router;
+
+// [
+//   {
+//     InitialDrain: 2094508464,
+//     Cycle: 'ID',
+//     Fill: '-',
+//     Drain: '-',
+//     UF: '-',
+//     LastFill: '-',
+//     FillTime: '-',
+//     DrainTime: '0',
+//   },
+//   {
+//     InitialDrain: '-',
+//     Cycle: '0',
+//     Fill: '0',
+//     Drain: '0',
+//     UF: '-',
+//     LastFill: '-',
+//     FillTime: '0',
+//     DrainTime: '0',
+//   },
+//   {
+//     InitialDrain: '-',
+//     Cycle: 'LF',
+//     Fill: '-',
+//     Drain: '-',
+//     UF: '-',
+//     LastFill: '32562',
+//     FillTime: '4000219',
+//     DrainTime: '-',
+//   },
+// ];
+//////////////////////////////////////////////
+// [
+//   {
+//     InitialDrain: '400',
+//     Cycle: 'ID',
+//     Fill: '-',
+//     Drain: '-',
+//     UF: '-',
+//     LastFill: '-',
+//     FillTime: '-',
+//     DrainTime: '5',
+//   },
+//   {
+//     InitialDrain: '-',
+//     Cycle: '0',
+//     Fill: '400',
+//     Drain: '401',
+//     UF: '1',
+//     LastFill: '-',
+//     FillTime: '225',
+//     DrainTime: '345',
+//   },
+//   {
+//     InitialDrain: '-',
+//     Cycle: '1',
+//     Fill: '400',
+//     Drain: '401',
+//     UF: '1',
+//     LastFill: '-',
+//     FillTime: '225',
+//     DrainTime: '345',
+//   },
+//   {
+//     InitialDrain: '-',
+//     Cycle: '2',
+//     Fill: '400',
+//     Drain: '401',
+//     UF: '1',
+//     LastFill: '-',
+//     FillTime: '225',
+//     DrainTime: '345',
+//   },
+//   {
+//     InitialDrain: '-',
+//     Cycle: '3',
+//     Fill: '400',
+//     Drain: '401',
+//     UF: '1',
+//     LastFill: '-',
+//     FillTime: '225',
+//     DrainTime: '345',
+//   },
+//   {
+//     InitialDrain: '-',
+//     Cycle: 'LF',
+//     Fill: '-',
+//     Drain: '-',
+//     UF: '-',
+//     LastFill: '400',
+//     FillTime: '3',
+//     DrainTime: '-',
+//   },
+// ];
