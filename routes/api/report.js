@@ -101,16 +101,6 @@ router.get('/daily/:patientId', async (req, res) => {
         .reverse(),
     );
   });
-  // });
-
-  // const dates = fs.readdirSync(dir);
-  // const data = dates.map((date) => {
-  //   const subfolder = fs.readdirSync(dir + date);
-  //   // console.log(zz);
-  //   const reports = subfolder.map((sf) => sf.split('.')[0]);
-  //   return { date, reports };
-  // });
-  // res.json(data.reverse());
 });
 
 router.get('/list/:date/:patientId', (req, res) => {
@@ -131,16 +121,6 @@ router.get('/list/:date/:patientId', (req, res) => {
       data.Contents.map((key) => key.Key.split('/')[3].split('.')[0]).reverse(),
     );
   });
-  // if (!fs.existsSync(dir)) {
-  //   res.send('Wrong Path');
-  // } else {
-  //   fs.readdir(dir, (err, files) => {
-  //     list = files.map((fl) => fl.split('.')[0]);
-  //     // res.send(files.reverse());
-  //     console.log(list);
-  //     res.send(list.reverse());
-  //   });
-  // }
 });
 
 //Access Patient Report for APP
@@ -166,18 +146,18 @@ router.get('/report/:patientId/:date', async (req, res) => {
       console.log('ERROR', err);
     }
     if (data) {
-      console.log('DATA', data.Body.toString());
-      const file = data.Body.toString().split('\n');
-      const dat = file
-        .map((f) => {
-          if (f[0] === '-') {
-            f = '-,-,-,-,' + f;
-          }
-          return f;
-        })
-        .join('\n');
+      // console.log('DATA', data.Body.toString());
+      // const file = data.Body.toString().split('\n');
+      // const dat = file
+      //   .map((f) => {
+      //     if (f[0] === '-') {
+      //       f = '-,-,-,-,' + f;
+      //     }
+      //     return f;
+      //   })
+      //   .join('\n');
       csv()
-        .fromString(dat)
+        .fromString(data)
         // .fromString(newFile)
         .then((jsonObj) => {
           const jsn = JSON.stringify(jsonObj).replace(/[ ]/g, '');
