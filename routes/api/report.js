@@ -160,6 +160,7 @@ router.get('/report/:patientId/:date', async (req, res) => {
         .fromString(data)
         // .fromString(newFile)
         .then((jsonObj) => {
+          console.log(jsonObj);
           const jsn = JSON.stringify(jsonObj).replace(/[ ]/g, '');
           const output = JSON.parse(jsn);
           // if (output[0].InitialDrain < 0) {
