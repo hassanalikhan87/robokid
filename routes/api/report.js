@@ -146,8 +146,10 @@ router.get('/report/:patientId/:date', async (req, res) => {
       console.log('ERROR', err);
     }
     if (data) {
+      console.log(data);
       // console.log('DATA', data.Body.toString());
       // const file = data.Body.toString().split('\n');
+      const file = data.Body.toString();
       // const dat = file
       //   .map((f) => {
       //     if (f[0] === '-') {
@@ -157,7 +159,7 @@ router.get('/report/:patientId/:date', async (req, res) => {
       //   })
       //   .join('\n');
       csv()
-        .fromString(data)
+        .fromString(file)
         // .fromString(newFile)
         .then((jsonObj) => {
           console.log(jsonObj);
