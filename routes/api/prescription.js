@@ -6,10 +6,6 @@ const path = require('path');
 
 const { Prescription } = require('../../models');
 
-const ID = 'AKIAW3N6SFH7VAQWMM2D';
-const SECRET = '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';
-const BUCKET_NAME = 'testqq';
-
 AWS.config.update({
   accessKeyId: ID,
   secretAccessKey: SECRET,

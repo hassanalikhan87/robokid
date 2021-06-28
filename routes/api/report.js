@@ -15,10 +15,6 @@ const path = require('path');
 // const md = dd < 10 ? '-0' : '-';
 // const date = yyyy + ym + mm + md + dd;
 
-const ID = 'AKIAW3N6SFH7VAQWMM2D';
-const SECRET = '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';
-const BUCKET_NAME = 'testqq';
-
 AWS.config.update({
   accessKeyId: ID,
   secretAccessKey: SECRET,
